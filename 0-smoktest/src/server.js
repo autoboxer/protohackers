@@ -1,7 +1,7 @@
 import net from 'node:net';
 
 const server = net.createServer( ( socket ) => {
-  let receivedData = Buffer.alloc(0);
+  let receivedData = Buffer.alloc( 0 );
 
   socket.on('data', data => {
     receivedData = Buffer.concat([ receivedData, data ]);
