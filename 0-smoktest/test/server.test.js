@@ -4,7 +4,7 @@ import net from 'node:net';
 import server from '../src/server.js';
 
 const host = 'localhost';
-const port = 7;
+const port = 3030;
 
 describe( 'server.js', () => {
 
