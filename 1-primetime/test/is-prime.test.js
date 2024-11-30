@@ -38,7 +38,7 @@ describe( 'isPrime', () => {
 
   it('should return false for non-integer numbers', () => {
 
-    assert.strictEqual( isPrime( 2.5 ),  false);
+    assert.strictEqual( isPrime( 2.5 ), false);
     assert.strictEqual( isPrime( '7 '), false );
     assert.strictEqual( isPrime( NaN ), false );
     assert.strictEqual( isPrime( undefined ), false );
