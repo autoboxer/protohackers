@@ -25,18 +25,18 @@ describe( 'server.js', () => {
     let response = '';
 
     await new Promise( ( resolve, reject ) => {
-      client.on('data', data => {
+      client.on( 'data', data => {
         response += data.toString();
         client.end();
       });
 
-      client.on('end', () => {
+      client.on( 'end', () => {
         const parsed = JSON.parse( response.trim() );
         assert.deepStrictEqual(parsed, { method: 'isPrime', prime: true });
         resolve();
       });
 
-      client.on('error', reject);
+      client.on( 'error', reject );
       client.write( `${ message }\n` );
     });
   });
@@ -49,12 +49,12 @@ describe( 'server.js', () => {
     let response = '';
 
     await new Promise( ( resolve, reject ) => {
-      client.on('data', data => {
+      client.on( 'data', data => {
         response += data.toString();
         client.end();
       });
 
-      client.on('end', () => {
+      client.on( 'end', () => {
         const parsed = JSON.parse( response.trim() );
         assert.equal( response.endsWith('\n'), true );
         assert.ok( parsed.method, 'response should have a method' );
@@ -64,7 +64,7 @@ describe( 'server.js', () => {
         resolve();
       });
 
-      client.on('error', reject);
+      client.on( 'error', reject );
       client.write( `${ message }\n` );
     });
   });
@@ -77,18 +77,18 @@ describe( 'server.js', () => {
     let response = '';
 
     await new Promise( ( resolve, reject ) => {
-      client.on('data', data => {
+      client.on( 'data', data => {
         response += data.toString();
         client.end();
       });
 
-      client.on('end', () => {
+      client.on( 'end', () => {
         const parsed = JSON.parse( response.trim() );
         assert.equal( parsed.prime, true );
         resolve();
       });
 
-      client.on('error', reject);
+      client.on( 'error', reject );
       client.write( `${ message }\n` );
     });
   });
@@ -104,12 +104,12 @@ describe( 'server.js', () => {
     let response = '';
 
     await new Promise( ( resolve, reject ) => {
-      client.on('data', data => {
+      client.on( 'data', data => {
         response += data.toString();
         client.end();
       });
 
-      client.on('end', () => {
+      client.on( 'end', () => {
         const jsonStrings = response.match( /(\{.*?\})/g );
 
         for ( const [ i, jsonString ] of jsonStrings.entries() ) {
@@ -120,7 +120,7 @@ describe( 'server.js', () => {
         resolve();
       });
 
-      client.on('error', reject);
+      client.on( 'error', reject );
 
       for ( const message of messages ) {
         client.write( `${ message }` );
@@ -136,19 +136,19 @@ describe( 'server.js', () => {
     let response = '';
 
     await new Promise( ( resolve, reject ) => {
-      client.on('data', data => {
+      client.on( 'data', data => {
         response += data.toString();
         client.end();
       });
 
-      client.on('end', () => {
+      client.on( 'end', () => {
         const parsed = JSON.parse( response.trim() );
         assert.ok( parsed.error, 'response should have an error' );
         assert.equal( parsed.error, 'Malformed request' );
         resolve();
       });
 
-      client.on('error', reject);
+      client.on( 'error', reject );
       client.write( `${ message }` );
     });
   });
@@ -161,19 +161,19 @@ describe( 'server.js', () => {
     let response = '';
 
     await new Promise( ( resolve, reject ) => {
-      client.on('data', data => {
+      client.on( 'data', data => {
         response += data.toString();
         client.end();
       });
 
-      client.on('end', () => {
+      client.on( 'end', () => {
         const parsed = JSON.parse( response.trim() );
         assert.ok( parsed.error, 'response should have an error' );
         assert.equal( parsed.error, 'Invalid request' );
         resolve();
       });
 
-      client.on('error', reject);
+      client.on( 'error', reject );
       client.write( `${ message }` );
     });
   });
@@ -186,19 +186,19 @@ describe( 'server.js', () => {
     let response = '';
 
     await new Promise( ( resolve, reject ) => {
-      client.on('data', data => {
+      client.on( 'data', data => {
         response += data.toString();
         client.end();
       });
 
-      client.on('end', () => {
+      client.on( 'end', () => {
         const parsed = JSON.parse( response.trim() );
         assert.ok( parsed.error, 'response should have an error' );
         assert.equal( parsed.error, 'Invalid request' );
         resolve();
       });
 
-      client.on('error', reject);
+      client.on( 'error', reject );
       client.write( `${ message }` );
     });
   });
@@ -211,19 +211,19 @@ describe( 'server.js', () => {
     let response = '';
 
     await new Promise( ( resolve, reject ) => {
-      client.on('data', data => {
+      client.on( 'data', data => {
         response += data.toString();
         client.end();
       });
 
-      client.on('end', () => {
+      client.on( 'end', () => {
         const parsed = JSON.parse( response.trim() );
         assert.ok( parsed.error, 'response should have an error' );
         assert.equal( parsed.error, 'Invalid method' );
         resolve();
       });
 
-      client.on('error', reject);
+      client.on( 'error', reject );
       client.write( `${ message }` );
     });
   });
@@ -236,19 +236,19 @@ describe( 'server.js', () => {
     let response = '';
 
     await new Promise( ( resolve, reject ) => {
-      client.on('data', data => {
+      client.on( 'data', data => {
         response += data.toString();
         client.end();
       });
 
-      client.on('end', () => {
+      client.on( 'end', () => {
         const parsed = JSON.parse( response.trim() );
         assert.ok( parsed.error, 'response should have an error' );
         assert.equal( parsed.error, 'Invalid request' );
         resolve();
       });
 
-      client.on('error', reject);
+      client.on( 'error', reject );
       client.write( `${ message }` );
     });
   });
