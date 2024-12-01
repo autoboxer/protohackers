@@ -13,22 +13,33 @@ const server = net.createServer( ( socket ) => {
     if ( message.endsWith('\n') ) {
       receivedData = Buffer.alloc( 0 );
 
-      const { method, number } = JSON.parse( message );
+      let method;
+      let number;
 
-      try {
-        JSON.parse( message );
-      } catch ( error ) {
-        socket.write( `${ JSON.stringify( { id, error: 'Malformed request' } ) }\n` );
+      // split the message into an array of JSON strings
+      const jsonStrings = message.match( /(\{.*?\})/g );
+
+      if ( !jsonStrings ) {
+        socket.write( `${ JSON.stringify({ error: 'Malformed request' }) }\n` );
+        return;
       }
 
-      if ( !method || !number ) {
-        socket.write( `${ JSON.stringify( { id, error: 'Invalid request' } ) }\n` );
-      } else if ( method !== 'isPrime' ) {
-        socket.write( `${ JSON.stringify( { id, error: 'Invalid method' } ) }\n` );
-      } else if ( typeof number !== 'number' ) {
-        socket.write( `${ JSON.stringify( { id, error: 'Invalid number' } ) }\n` );
-      } else {
-        socket.write( `${ JSON.stringify( { method: 'isPrime', prime: isPrime( number ) } ) }\n` );
+      try {
+        for ( const jsonString of jsonStrings ) {
+          ({ method, number } = JSON.parse( jsonString ));
+
+          if ( !method || !number ) {
+            throw new Error('Invalid request');
+          } else if ( method !== 'isPrime' ) {
+            throw new Error('Invalid method')
+          } else if ( typeof number !== 'number' ) {
+            throw new Error('Invalid number')
+          }
+
+          socket.write( `${ JSON.stringify( { method: 'isPrime', prime: isPrime( number ) } ) }\n` );
+        }
+      } catch ( error ) {
+        socket.write(`${JSON.stringify({ error: error.message })}`);
       }
     }
   });
