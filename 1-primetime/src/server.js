@@ -2,44 +2,35 @@ import net from 'node:net';
 import isPrime from '../utils/is-prime.js';
 
 const server = net.createServer( ( socket ) => {
-  let receivedData = Buffer.alloc( 0 );
-  let message = '';
+  let buffer = '';
 
   socket.on('data', data => {
-    receivedData = Buffer.concat([ receivedData, data ]);
+    buffer += data.toString();
 
-    message += data.toString();
+    let newlineIndex;
 
-    if ( message.endsWith('\n') ) {
-      receivedData = Buffer.alloc( 0 );
-
-      let method;
-      let number;
-
-      // split the message into an array of JSON strings
-      const jsonStrings = message.match( /(\{.*?\})/g );
-
-      if ( !jsonStrings ) {
-        socket.write( `${ JSON.stringify({ error: 'Malformed request' }) }\n` );
-        return;
-      }
+    while ( ( newlineIndex = buffer.indexOf('\n') ) !== -1 ) {
+      // pull a complete message from the buffer
+      const message = buffer.slice( 0, newlineIndex );
+      buffer = buffer.slice( newlineIndex + 1 );
 
       try {
-        for ( const jsonString of jsonStrings ) {
-          ({ method, number } = JSON.parse( jsonString ));
+          const { method, number } = JSON.parse( message );
 
-          if ( !method || ( !number && typeof number !== 'number' ) ) {
-            throw new Error('Invalid request');
-          } else if ( method !== 'isPrime' ) {
-            throw new Error('Invalid method')
-          } else if ( typeof number !== 'number' ) {
-            throw new Error('Invalid number')
+          if ( !method || typeof number !== 'number' ) {
+            socket.write(`${ JSON.stringify( { error: 'Invalid request' } ) }\n`);
+            continue;
+          }
+          
+          if ( method !== 'isPrime' ) {
+            socket.write(`${ JSON.stringify( { error: 'Invalid method' } ) }\n`);
+            continue;
           }
 
           socket.write( `${ JSON.stringify( { method: 'isPrime', prime: isPrime( number ) } ) }\n` );
-        }
+        // }
       } catch ( error ) {
-        socket.write(`${JSON.stringify({ error: error.message })}`);
+        socket.write(`${ JSON.stringify({ error: 'Malformed request' }) }\n`);
       }
     }
   });
@@ -51,7 +42,7 @@ const server = net.createServer( ( socket ) => {
 
 server.maxConnections = 5;
 
-server.listen( { port: 3031 }, () => {
+server.listen( { port: 3030 }, () => {
   console.log( `Server is running on port ${ server.address().port }` );
 });
 

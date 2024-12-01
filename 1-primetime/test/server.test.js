@@ -5,7 +5,7 @@ import server from '../src/server.js';
 import isPrime from '../utils/is-prime.js';
 
 const host = 'localhost';
-const port = 3031;
+const port = 3030;
 
 describe( 'server.js', () => {
 
@@ -99,8 +99,7 @@ describe( 'server.js', () => {
 
     const numbers = [ 1, 2, 3, 4, 9, 13, 100, 101 ];
 
-    const messages = numbers.map( number => JSON.stringify({ method: 'isPrime', number }) );
-    messages[ messages.length - 1 ] += '\n';
+    const messages = numbers.map( number => `${ JSON.stringify({ method: 'isPrime', number }) }\n` );
 
     let response = '';
 
@@ -208,7 +207,7 @@ describe( 'server.js', () => {
     
     const client = net.connect({ host, port });
 
-    const message = '{"method": "isNotPrime", "number": "7"}\n';
+    const message = '{"method": "isNotPrime", "number": 7}\n';
     let response = '';
 
     await new Promise( ( resolve, reject ) => {
@@ -245,7 +244,7 @@ describe( 'server.js', () => {
       client.on('end', () => {
         const parsed = JSON.parse( response.trim() );
         assert.ok( parsed.error, 'response should have an error' );
-        assert.equal( parsed.error, 'Invalid number' );
+        assert.equal( parsed.error, 'Invalid request' );
         resolve();
       });
 
