@@ -32,12 +32,6 @@ this is a solution to the [protohackers primetime challenge](https://protohacker
 node src/server.js
 ```
 
-### running a client
-
-```bash
-TBD
-```
-
 ### testing
 
 ```bash
