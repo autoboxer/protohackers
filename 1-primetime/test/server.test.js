@@ -1,7 +1,8 @@
-import { describe, it, after, mock } from 'node:test';
+import { describe, it, after } from 'node:test';
 import assert from 'node:assert';
 import net from 'node:net';
 import server from '../src/server.js';
+import isPrime from '../utils/is-prime.js';
 
 const host = 'localhost';
 const port = 3031;
@@ -68,6 +69,191 @@ describe( 'server.js', () => {
     });
   });
 
+  it('should ignore extraneous fields in the request', async () => {
+
+    const client = net.connect({ host, port });
+
+    const message = JSON.stringify({ method: 'isPrime', number: 7, extraneous: 'field' });
+    let response = '';
+
+    await new Promise( ( resolve, reject ) => {
+      client.on('data', data => {
+        response += data.toString();
+        client.end();
+      });
+
+      client.on('end', () => {
+        const parsed = JSON.parse( response.trim() );
+        assert.equal( parsed.prime, true );
+        resolve();
+      });
+
+      client.on('error', reject);
+      client.write( `${ message }\n` );
+    });
+  });
+
+  it('should handle multiple requests from the same client in order', async () => {
+
+    const client = net.connect({ host, port });
+
+    const numbers = [ 1, 2, 3, 4, 9, 13, 100, 101 ];
+
+    const messages = numbers.map( number => JSON.stringify({ method: 'isPrime', number }) );
+    messages[ messages.length - 1 ] += '\n';
+
+    let response = '';
+
+    await new Promise( ( resolve, reject ) => {
+      client.on('data', data => {
+        response += data.toString();
+        client.end();
+      });
+
+      client.on('end', () => {
+        const jsonStrings = response.match( /(\{.*?\})/g );
+
+        for ( const [ i, jsonString ] of jsonStrings.entries() ) {
+          const parsed = JSON.parse( jsonString );
+          assert.equal( parsed.prime, isPrime( numbers[ i ] ) );
+        }
+        
+        resolve();
+      });
+
+      client.on('error', reject);
+
+      for ( const message of messages ) {
+        client.write( `${ message }` );
+      }
+    });
+  });
+
+  it('should respond with an error for malformed JSON', async () => {
+
+    const client = net.connect({ host, port });
+
+    const message = '{"method": "isPrime", "number": 7\n';
+    let response = '';
+
+    await new Promise( ( resolve, reject ) => {
+      client.on('data', data => {
+        response += data.toString();
+        client.end();
+      });
+
+      client.on('end', () => {
+        const parsed = JSON.parse( response.trim() );
+        assert.ok( parsed.error, 'response should have an error' );
+        assert.equal( parsed.error, 'Malformed request' );
+        resolve();
+      });
+
+      client.on('error', reject);
+      client.write( `${ message }` );
+    });
+  });
+
+  it('should respond with an error for a request with missing number', async () => {
+    
+    const client = net.connect({ host, port });
+
+    const message = '{"method": "isPrime"}\n';
+    let response = '';
+
+    await new Promise( ( resolve, reject ) => {
+      client.on('data', data => {
+        response += data.toString();
+        client.end();
+      });
+
+      client.on('end', () => {
+        const parsed = JSON.parse( response.trim() );
+        assert.ok( parsed.error, 'response should have an error' );
+        assert.equal( parsed.error, 'Invalid request' );
+        resolve();
+      });
+
+      client.on('error', reject);
+      client.write( `${ message }` );
+    });
+  });
+
+  it('should respond with an error for a request with missing method', async () => {
+    
+    const client = net.connect({ host, port });
+
+    const message = '{"number": "7"}\n';
+    let response = '';
+
+    await new Promise( ( resolve, reject ) => {
+      client.on('data', data => {
+        response += data.toString();
+        client.end();
+      });
+
+      client.on('end', () => {
+        const parsed = JSON.parse( response.trim() );
+        assert.ok( parsed.error, 'response should have an error' );
+        assert.equal( parsed.error, 'Invalid request' );
+        resolve();
+      });
+
+      client.on('error', reject);
+      client.write( `${ message }` );
+    });
+  });
+
+  it('should respond with an error for a request with an invalid method', async () => {
+    
+    const client = net.connect({ host, port });
+
+    const message = '{"method": "isNotPrime", "number": "7"}\n';
+    let response = '';
+
+    await new Promise( ( resolve, reject ) => {
+      client.on('data', data => {
+        response += data.toString();
+        client.end();
+      });
+
+      client.on('end', () => {
+        const parsed = JSON.parse( response.trim() );
+        assert.ok( parsed.error, 'response should have an error' );
+        assert.equal( parsed.error, 'Invalid method' );
+        resolve();
+      });
+
+      client.on('error', reject);
+      client.write( `${ message }` );
+    });
+  });
+
+  it('should respond with an error for an invalid number', async () => {
+    
+    const client = net.connect({ host, port });
+
+    const message = '{"method": "isPrime", "number": "seven"}\n';
+    let response = '';
+
+    await new Promise( ( resolve, reject ) => {
+      client.on('data', data => {
+        response += data.toString();
+        client.end();
+      });
+
+      client.on('end', () => {
+        const parsed = JSON.parse( response.trim() );
+        assert.ok( parsed.error, 'response should have an error' );
+        assert.equal( parsed.error, 'Invalid number' );
+        resolve();
+      });
+
+      client.on('error', reject);
+      client.write( `${ message }` );
+    });
+  });
+  
   it('should handle 5 concurrent connections', async () => {
     const clientPromises = [];
     const clientClosePromises = [];
