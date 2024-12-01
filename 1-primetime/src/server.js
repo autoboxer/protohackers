@@ -28,7 +28,7 @@ const server = net.createServer( ( socket ) => {
         for ( const jsonString of jsonStrings ) {
           ({ method, number } = JSON.parse( jsonString ));
 
-          if ( !method || !number ) {
+          if ( !method || ( !number && typeof number !== 'number' ) ) {
             throw new Error('Invalid request');
           } else if ( method !== 'isPrime' ) {
             throw new Error('Invalid method')
