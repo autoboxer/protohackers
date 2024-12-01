@@ -3,11 +3,11 @@ import net from 'node:net';
 const server = net.createServer( ( socket ) => {
   let receivedData = Buffer.alloc( 0 );
 
-  socket.on('data', data => {
+  socket.on( 'data', data => {
     receivedData = Buffer.concat([ receivedData, data ]);
   });
 
-  socket.on('end', () => {
+  socket.on( 'end', () => {
     socket.write( receivedData, () => {
       socket.end();
     } );
