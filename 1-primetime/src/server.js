@@ -4,7 +4,7 @@ import isPrime from '../utils/is-prime.js';
 const server = net.createServer( ( socket ) => {
   let buffer = '';
 
-  socket.on('data', data => {
+  socket.on( 'data', data => {
     buffer += data.toString();
 
     let newlineIndex;
@@ -35,7 +35,7 @@ const server = net.createServer( ( socket ) => {
     }
   });
 
-  socket.on('end', () => {
+  socket.on( 'end', () => {
     socket.end();
   })
 });
