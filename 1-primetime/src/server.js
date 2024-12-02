@@ -1,7 +1,7 @@
 import net from 'node:net';
 import isPrime from '../utils/is-prime.js';
 
-const server = net.createServer( ( socket ) => {
+const server = net.createServer( socket => {
   let buffer = '';
 
   socket.on( 'data', data => {
