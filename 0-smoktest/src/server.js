@@ -1,6 +1,6 @@
 import net from 'node:net';
 
-const server = net.createServer( ( socket ) => {
+const server = net.createServer( socket => {
   let receivedData = Buffer.alloc( 0 );
 
   socket.on( 'data', data => {
