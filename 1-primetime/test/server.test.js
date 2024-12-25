@@ -18,7 +18,6 @@ describe( 'server.js', () => {
   });
 
   it('should only respond after receiving a full message', async () => {
-
     const client = net.connect({ host, port });
 
     const message = JSON.stringify({ method: 'isPrime', number: 7 });
@@ -42,7 +41,6 @@ describe( 'server.js', () => {
   });
 
   it('should send a well-formed response for a valid request', async () => {
-
     const client = net.connect({ host, port });
 
     const message = JSON.stringify({ method: 'isPrime', number: 7 });
@@ -70,7 +68,6 @@ describe( 'server.js', () => {
   });
 
   it('should ignore extraneous fields in the request', async () => {
-
     const client = net.connect({ host, port });
 
     const message = JSON.stringify({ method: 'isPrime', number: 7, extraneous: 'field' });
@@ -94,7 +91,6 @@ describe( 'server.js', () => {
   });
 
   it('should handle multiple requests from the same client in order', async () => {
-
     const client = net.connect({ host, port });
 
     const numbers = [ 1, 2, 3, 4, 9, 13, 100, 101 ];
@@ -129,7 +125,6 @@ describe( 'server.js', () => {
   });
 
   it('should respond with an error for malformed JSON', async () => {
-
     const client = net.connect({ host, port });
 
     const message = '{"method": "isPrime", "number": 7\n';
@@ -154,7 +149,6 @@ describe( 'server.js', () => {
   });
 
   it('should respond with an error for a request with missing number', async () => {
-    
     const client = net.connect({ host, port });
 
     const message = '{"method": "isPrime"}\n';
@@ -179,7 +173,6 @@ describe( 'server.js', () => {
   });
 
   it('should respond with an error for a request with missing method', async () => {
-    
     const client = net.connect({ host, port });
 
     const message = '{"number": "7"}\n';
@@ -203,8 +196,7 @@ describe( 'server.js', () => {
     });
   });
 
-  it('should respond with an error for a request with an invalid method', async () => {
-    
+  it('should respond with an error for a request with an invalid method', async () => { 
     const client = net.connect({ host, port });
 
     const message = '{"method": "isNotPrime", "number": 7}\n';
@@ -229,7 +221,6 @@ describe( 'server.js', () => {
   });
 
   it('should respond with an error for an invalid number', async () => {
-    
     const client = net.connect({ host, port });
 
     const message = '{"method": "isPrime", "number": "seven"}\n';

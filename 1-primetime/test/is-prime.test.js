@@ -21,7 +21,6 @@ describe( 'isPrime', () => {
   });
 
   it('should return true for prime numbers', () => {
-
     assert.strictEqual( isPrime( 2 ), true );
     assert.strictEqual( isPrime( 3 ), true );
     assert.strictEqual( isPrime( 13 ), true );
@@ -29,7 +28,6 @@ describe( 'isPrime', () => {
   });
 
   it('should return false for non-prime numbers', () => {
-
     assert.strictEqual( isPrime( 1 ), false );
     assert.strictEqual( isPrime( 4 ), false );
     assert.strictEqual( isPrime( 9 ), false );
@@ -37,15 +35,13 @@ describe( 'isPrime', () => {
   });
 
   it('should return false for non-integer numbers', () => {
-
     assert.strictEqual( isPrime( 2.5 ), false);
     assert.strictEqual( isPrime( '7 '), false );
     assert.strictEqual( isPrime( NaN ), false );
     assert.strictEqual( isPrime( undefined ), false );
   });
 
-  it('should only cache integers', async () => {
-    
+  it('should only cache integers', async () => { 
     isPrime( 2.5 );
     isPrime( NaN );
     isPrime( undefined );
@@ -60,7 +56,6 @@ describe( 'isPrime', () => {
   });
 
   it('should return cached values', () => {
-
     isPrime( 2 );
 
     assert.equal( Map.prototype.has.mock.calls.length, 1 );
