@@ -13,7 +13,7 @@ class BST {
       this.root = null;
   }
 
-  insert( key, value ) {
+  insert({ key, value }) {
       const node = new TreeNode( key, value );
 
       if ( !this.root ) {
@@ -47,7 +47,7 @@ class BST {
       }
   }
 
-  rangeQuery( start, end ) {
+  rangeQuery({ start, end }) {
       const result = [];
 
       const traverse = node => {
