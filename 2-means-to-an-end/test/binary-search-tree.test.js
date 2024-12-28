@@ -56,4 +56,16 @@ describe('BST', () => {
 
     assert.strictEqual( result, 0 );
   });
+
+  it('should return 0 if start is greater than end', () => {
+    const bst = new BST();
+
+    bst.insert({ key: 10, value: 5 });
+    bst.insert({ key: 5, value: 3 });
+    bst.insert({ key: 15, value: 7 });
+
+    const result = bst.rangeQuery({ start: 15, end: 5 });
+
+    assert.strictEqual( result, 0 );
+  });
 });
