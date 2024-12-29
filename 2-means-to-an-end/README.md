@@ -137,3 +137,10 @@ node src/server.js
 ```bash
 node --test
 ```
+
+---
+
+### design decisions
+
+1. While the bank entries per user will likely stay relatively small, I chose to use a binary search tree to speed up traversal during inserts and range queries 
+2. With unspecified error behavior in the requirements, I've reserved the lower-bound `int32` value of `-2147483648` as an error character to return to the user.  This was done to allow messages after malformed attempts to continue to flow
