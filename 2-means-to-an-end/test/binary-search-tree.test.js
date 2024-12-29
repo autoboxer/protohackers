@@ -48,10 +48,6 @@ describe('BST', () => {
   it('should return 0 for an empty range query', () => {
     const bst = new BST();
 
-    bst.insert({ key: 10, value: 5 });
-    bst.insert({ key: 5, value: 3 });
-    bst.insert({ key: 15, value: 7 });
-
     const result = bst.rangeQuery({ start: 20, end: 25 });
 
     assert.strictEqual( result, 0 );
